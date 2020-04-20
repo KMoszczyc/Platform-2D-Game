@@ -18,6 +18,13 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject menuButton;
 
+    [SerializeField]
+    private Slider volumeSlider;
+
+    private AudioSource audioSource;
+    [SerializeField]  private AudioClip hitAudio;
+    [SerializeField]  private AudioClip gemAudio;
+
     public bool disablePlayerInput = false;
 
     // Start is called before the first frame update
@@ -28,7 +35,15 @@ public class GameManager : MonoBehaviour
         endingText.SetActive(false);
         tryAgainButton.SetActive(false);
         menuButton.SetActive(false);
+
+        audioSource = GetComponent<AudioSource>();
     }
+
+    void Update()
+    {
+        audioSource.volume = volumeSlider.value;
+    }
+
 
     public void UpdateGems(int gemsCollected)
     {
@@ -72,5 +87,14 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
+    public void PlayHitSound()
+    {
+        audioSource.PlayOneShot(hitAudio);
+    }
+
+    public void PlayGemSound()
+    {
+        audioSource.PlayOneShot(gemAudio);
+    }
 
 }

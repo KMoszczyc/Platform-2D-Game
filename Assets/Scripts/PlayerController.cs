@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody)), RequireComponent(typeof(SpriteRenderer))]
 public class PlayerController : MonoBehaviour
 {
-    GameManager gameManager;
+    [SerializeField] private GameManager gameManager;
     public Animator animator;
 
     float bottomLine;
@@ -26,10 +26,12 @@ public class PlayerController : MonoBehaviour
     public Sprite goUp;
     public Sprite goDown;
 
+    public GameObject missilePrefab;
+
+    [SerializeField] private Camera cam;
 
     void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         startPos = transform.position;
         renderer = GetComponent<SpriteRenderer>();
         bottomLine = GameObject.Find("BottomLine").transform.position.y;
@@ -37,6 +39,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("throw missile!!");
+            ThrowMissile(Input.mousePosition);
+        }
+
       
         if(!gameManager.disablePlayerInput)
             direction = Input.GetAxisRaw("Horizontal");
@@ -48,22 +56,20 @@ public class PlayerController : MonoBehaviour
         if (direction >0)
             renderer.flipX = false;
 
-        Vector3 movement = new Vector3(direction, 0,0) * Time.deltaTime * runSpeed;
 
-        animator.SetFloat("Speed", Mathf.Abs(movement.x));
-        animator.SetBool("IsJumping", !isGrounded);
-
-        transform.position += movement;
         Jump();
-
+        AnimatorController();
         if (IsBelowBottomLine())
             GoBackToStart();
-
-        
-
-        Debug.Log(health);
     }
+    private void FixedUpdate()
+    {
+        Vector3 movement = new Vector3(direction, 0, 0) * Time.deltaTime * runSpeed;
 
+        transform.position += movement;
+
+        AnimatorController();
+    }
     private void GoBackToStart()
     {
         transform.position = startPos;
@@ -72,6 +78,27 @@ public class PlayerController : MonoBehaviour
     private bool IsBelowBottomLine()
     {
         return transform.position.y < bottomLine;
+    }
+
+    private void AnimatorController()
+    {
+        if(rb.velocity.y>0.01)
+            animator.SetBool("IsJumping", true);
+
+        if (rb.velocity.y < -0.01)
+        {
+            animator.SetBool("IsFalling", true);
+            animator.SetBool("IsJumping", false);
+        }
+
+        if (rb.velocity.y ==0)
+            animator.SetBool("IsFalling", false);
+
+        if (direction != 0)
+            animator.SetBool("IsRunning", true);
+        else
+            animator.SetBool("IsRunning", false);
+
     }
 
 
@@ -109,4 +136,28 @@ public class PlayerController : MonoBehaviour
             jumpForce = runSpeed * 3;
         }
     }
+
+    private void ThrowMissile(Vector2 mousePos)
+    {
+        Vector3 point = cam.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, cam.nearClipPlane));
+
+        Debug.Log(point);
+        GameObject missile = (GameObject)Instantiate(missilePrefab);
+        
+        Vector2 direction = (new Vector2(point.x,point.y) - new Vector2(transform.position.x, transform.position.y)).normalized;
+        missile.transform.position = transform.position + new Vector3(direction.x, direction.y, 0)/2;
+
+        missile.GetComponent<Rigidbody2D>().AddForce(direction * 10, ForceMode2D.Impulse);
+    }
+
+    public void PlayHitSound()
+    {
+        gameManager.PlayHitSound();
+    }
+
+    public void PlayGemSound()
+    {
+        gameManager.PlayGemSound();
+    }
+
 }

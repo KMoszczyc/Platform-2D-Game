@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 72de0c64f2c6a498096698322c976a67, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b1a9b2e7b5f817429c74ef894917e42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   animator: {fileID: 8694039633736824439}
   rb: {fileID: 8694039633736824442}
   renderer: {fileID: 8694039633736824443}
@@ -152,6 +153,9 @@ MonoBehaviour:
   isGrounded: 0
   goUp: {fileID: 21300000, guid: e2976d09b53264ffbbb9210a1ae1dcc0, type: 3}
   goDown: {fileID: 21300000, guid: 598fb1767626f42e992bb9c2769d86ea, type: 3}
+  missilePrefab: {fileID: 7955090593299764602, guid: 79fc27a1a26386d49ae1a5e1e4bda41a,
+    type: 3}
+  cam: {fileID: 0}
 --- !u!95 &8694039633736824439
 Animator:
   serializedVersion: 3

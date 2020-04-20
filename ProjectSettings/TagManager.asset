@@ -8,6 +8,8 @@ TagManager:
   - Platform
   - Gem
   - Spikes
+  - Missile
+  - Eagle
   layers:
   - Default
   - TransparentFX
